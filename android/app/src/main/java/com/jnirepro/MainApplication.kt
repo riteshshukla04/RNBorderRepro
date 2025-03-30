@@ -14,6 +14,17 @@ import com.facebook.soloader.SoLoader
 
 class MainApplication : Application(), ReactApplication {
 
+
+    companion object {
+        // Load native library
+        init {
+            System.loadLibrary("native-lib")
+        }
+
+        // Declare native function
+        external fun getNativeMessage(): String
+    }
+
   override val reactNativeHost: ReactNativeHost =
       object : DefaultReactNativeHost(this) {
         override fun getPackages(): List<ReactPackage> =
@@ -36,9 +47,12 @@ class MainApplication : Application(), ReactApplication {
   override fun onCreate() {
     super.onCreate()
     SoLoader.init(this, OpenSourceMergedSoMapping)
+    val message = getNativeMessage()
+    android.util.Log.d("MainApplication", "Message from C++: $message")
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       load()
     }
+    
   }
 }
